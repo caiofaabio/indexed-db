@@ -7,46 +7,46 @@ const Excluir = () => {
   const [id, setId] = useState(0);
   const [loading, setLoading] = useState(false);
 
-
-  const deleteItem = async (idToDelete: number,) => {
+  const deleteItem = async (idToDelete: number) => {
     try {
-      const db = await initDB();
-      const tx = db.transaction("minhaTabela", "readwrite");
-      const store = tx.objectStore("minhaTabela");
+      const db = await initDB(); // Inicializa o banco de dados
+      const tx = db.transaction("minhaTabela", "readwrite"); // Cria uma transação de escrita na tabela minhaTabela
+      const store = tx.objectStore("minhaTabela"); // Obtém o object store (tabela) minhaTabela
 
       /* excluindo item com o id */
-      await store.delete(idToDelete);
-      await tx.done;
+      await store.delete(idToDelete); // Deleta o item com o ID fornecido
+      await tx.done; // Completa a transação
 
-      alert('Item DELETADO com sucesso')
+      alert("Item DELETADO com sucesso"); // Exibe um alerta indicando sucesso na exclusão
     } catch (e) {
-      console.error(e, 'Erro ao DELETAR item');
+      console.error(e, "Erro ao DELETAR item"); // Exibe erros no console, se houver algum
     }
   };
 
   const handleDelete = async (e: FormEvent) => {
     e.preventDefault();
 
-    confirm('Tem certeza que deseja excluir este item?') && await deleteItem(id);
-  }
+    confirm("Tem certeza que deseja excluir este item?") &&
+      (await deleteItem(id)); // Pede confirmação antes de excluir o item
+  };
 
   useEffect(() => {
     const updateData = async () => {
       setLoading(true);
       try {
-        const db = await initDB();
-        const tx2 = db.transaction("minhaTabela", "readonly");
-        const store2 = tx2.objectStore("minhaTabela");
-        const allData = await store2.getAll();
-        setData(allData);
+        const db = await initDB(); // Inicializa o banco de dados
+        const tx2 = db.transaction("minhaTabela", "readonly"); // Cria uma transação de leitura na tabela minhaTabela
+        const store2 = tx2.objectStore("minhaTabela"); // Obtém o object store (tabela) minhaTabela
+        const allData = await store2.getAll(); // Obtém todos os dados da tabela
+        setData(allData); // Atualiza o estado data com os dados obtidos
       } catch (e) {
-        console.error(e);
+        console.error(e); // Exibe erros no console, se houver algum
       } finally {
-        setLoading(false);
+        setLoading(false); // Define loading como false após o término, indicando o fim do carregamento
       }
     };
 
-    updateData();
+    updateData(); // Chama a função updateData ao montar o componente
   }, []);
 
   console.log(data);
@@ -84,8 +84,8 @@ const Excluir = () => {
         ) : (
           data.map((item) => (
             <li key={item.id}>
-              ID: {item.id} - Nome: {item.nome} - Idade: {item.idade} - Profissão:{" "}
-              {item.profissao}
+              ID: {item.id} - Nome: {item.nome} - Idade: {item.idade} -
+              Profissão: {item.profissao}
             </li>
           ))
         )}

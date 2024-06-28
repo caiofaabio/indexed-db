@@ -11,18 +11,18 @@ const Criar = () => {
 
   const handleSubmit = async () => {
     if (nome) {
-      const db = await initDB();
-      const tx = db.transaction("minhaTabela", "readwrite");
-      const store = tx.objectStore("minhaTabela");
+      const db = await initDB(); // Inicializa o banco de dados
+      const tx = db.transaction("minhaTabela", "readwrite"); // Cria uma transação de escrita na tabela minhaTabela
+      const store = tx.objectStore("minhaTabela"); // Obtém o object store (tabela) minhaTabela
 
-      /* verifica se o nome ja existe */
-      const index = store.index("nome");
-      const existeItem = await index.get(nome);
+      /* verifica se o nome já existe */
+      const index = store.index("nome"); // Obtém o índice nome da tabela
+      const existeItem = await index.get(nome); // Verifica se já existe um item com o nome fornecido
       if (!existeItem) {
-        await store.add({nome, profissao, idade});
+        await store.add({nome, profissao, idade}); // Adiciona um novo item se o nome não existir
       }
 
-      await tx.done;
+      await tx.done; // Completa a transação
     }
   };
 
@@ -30,23 +30,23 @@ const Criar = () => {
     const updateData = async () => {
       setLoading(true);
       try {
-        const db = await initDB();
-        const tx2 = db.transaction("minhaTabela", "readonly");
-        const store2 = tx2.objectStore("minhaTabela");
-        const allData = await store2.getAll();
-        setData(allData);
+        const db = await initDB(); // Inicializa o banco de dados
+        const tx2 = db.transaction("minhaTabela", "readonly"); // Cria uma transação de leitura na tabela minhaTabela
+        const store2 = tx2.objectStore("minhaTabela"); // Obtém o object store (tabela) minhaTabela
+        const allData = await store2.getAll(); // Obtém todos os dados da tabela
+        setData(allData); // Atualiza o estado data com os dados obtidos
       } catch (e) {
-        console.error(e);
+        console.error(e); // Exibe erros no console, se houver algum
       } finally {
-        setLoading(false);
+        setLoading(false); // Define loading como false após o término, indicando o fim do carregamento
       }
     };
-  
+
     updateData();
   }, []);
 
   console.log(data);
-  console.log(loading)
+  console.log(loading);
   return (
     <main className="flex min-h-screen flex-col items-center  p-24">
       <h1>Criar Itens no indexedDB</h1>

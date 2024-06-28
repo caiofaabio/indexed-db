@@ -10,60 +10,59 @@ const Editar = () => {
   const [profissao, setProfissao] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   const updateItem = async (idToUpdate: any, newData: any) => {
     try {
-      const db = await initDB();
-      const tx = db.transaction("minhaTabela", "readwrite");
-      const store = tx.objectStore("minhaTabela");
+      const db = await initDB(); // Inicializa o banco de dados
+      const tx = db.transaction("minhaTabela", "readwrite"); // Cria uma transação de escrita na tabela minhaTabela
+      const store = tx.objectStore("minhaTabela"); // Obtém o object store (tabela) minhaTabela
 
       /* encontrar o item para update */
-      const itemToUpdate = await store.get(idToUpdate)
-      console.log(itemToUpdate)
+      const itemToUpdate = await store.get(idToUpdate); // Obtém o item com o ID fornecido para atualização
+      console.log(itemToUpdate);
 
-      if(!itemToUpdate) {
-        console.error('Item não encontrado')
-        return
+      if (!itemToUpdate) {
+        console.error("Item não encontrado"); // Exibe um erro se o item não for encontrado
+        return;
       }
 
       /* modificando item */
-      itemToUpdate.nome = newData.nome
-      itemToUpdate.idade = newData.idade
-      itemToUpdate.profissao = newData.profissao
+      itemToUpdate.nome = newData.nome; // Atualiza o nome do item
+      itemToUpdate.idade = newData.idade; // Atualiza a idade do item
+      itemToUpdate.profissao = newData.profissao; // Atualiza a profissão do item
 
-      await store.put(itemToUpdate)
+      await store.put(itemToUpdate); // Atualiza o item na tabela
 
-      await tx.done;
+      await tx.done; // Completa a transação
 
-      alert('Item atualizado com sucesso')
+      alert("Item atualizado com sucesso"); // Exibe um alerta indicando sucesso na atualização
     } catch (e) {
-      console.error(e, 'Erro ao atualizar item');
+      console.error(e, "Erro ao atualizar item"); // Exibe erros no console, se houver algum
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    await updateItem(id, {nome, idade, profissao});
-  }
+    await updateItem(id, {nome, idade, profissao}); // Chama a função updateItem para atualizar o item com os novos dados
+  };
 
   useEffect(() => {
     const updateData = async () => {
       setLoading(true);
       try {
-        const db = await initDB();
-        const tx2 = db.transaction("minhaTabela", "readonly");
-        const store2 = tx2.objectStore("minhaTabela");
-        const allData = await store2.getAll();
-        setData(allData);
+        const db = await initDB(); // Inicializa o banco de dados
+        const tx2 = db.transaction("minhaTabela", "readonly"); // Cria uma transação de leitura na tabela minhaTabela
+        const store2 = tx2.objectStore("minhaTabela"); // Obtém o object store (tabela) minhaTabela
+        const allData = await store2.getAll(); // Obtém todos os dados da tabela
+        setData(allData); // Atualiza o estado data com os dados obtidos
       } catch (e) {
-        console.error(e);
+        console.error(e); // Exibe erros no console, se houver algum
       } finally {
-        setLoading(false);
+        setLoading(false); // Define loading como false após o término, indicando o fim do carregamento
       }
     };
 
-    updateData();
+    updateData(); // Chama a função updateData ao montar o componente
   }, []);
 
   console.log(data);
@@ -136,8 +135,8 @@ const Editar = () => {
         ) : (
           data.map((item) => (
             <li key={item.id}>
-              ID: {item.id} - Nome: {item.nome} - Idade: {item.idade} - Profissão:{" "}
-              {item.profissao}
+              ID: {item.id} - Nome: {item.nome} - Idade: {item.idade} -
+              Profissão: {item.profissao}
             </li>
           ))
         )}
